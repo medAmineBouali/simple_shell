@@ -14,7 +14,7 @@ int main(void)
 
 	fork();
 	if (getpid() == -1)
-		return(1);
+		return (1);
 	if (pid == getpid())
 		printf("hi, im the parent, %d\n", pid);
 	else
