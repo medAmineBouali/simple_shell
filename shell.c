@@ -34,7 +34,7 @@ int main(void)
 	ii = (calc_args(buffer) + 2);
 	argvs = (char **)malloc(ii * sizeof(char *));
 	argv = strtok(buffer, delim2);
-	exit_check(buffer);
+	built_ins(buffer);
 	path_handler(path,buffer);
 	pid = fork();
 	if (pid == -1)

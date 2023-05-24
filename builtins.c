@@ -5,10 +5,10 @@
  *
  * Return: nothing.
  */
-void exit_check(char* buff)
+void _exiter(char* buff)
 {
-	if(strncmp(buff,"exit",5) == 0)
-		exit(0);
+	(void)buff;
+	exit(0);
 }
 /**
  * path_handler - handles the path entery.
@@ -23,4 +23,22 @@ void path_handler(char* path,char* buff)
 		strcat(path,buff);
 	} else
 		strcpy(path, buff);
+}
+void print_env(void)
+{
+	int index = 0;
+	char **env = environ;
+	index = 0;
+	while (env[index])
+	{
+		printf("%s\n",env[index]);
+		++index;
+	}
+}
+void built_ins(char* buff)
+{
+	if(strncmp(buff,"exit",5) == 0)
+	       _exiter(buff);
+	if(strncmp(buff,"env",4) == 0)
+		print_env();
 }
