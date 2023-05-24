@@ -1,10 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <wait.h>
+#include "shell.h"
+
 int calc_args(char *buffer);
 /**
  * main - Entry point.
@@ -18,11 +13,10 @@ int main(void)
 	pid_t pid;
 	char *buffer;
 	char path[25] = "/bin/";
-	struct stat status;
 	size_t bufsize = 32;
 	char delim1[] = "\n", delim2[] = " ";
 	char **argvs;
-	char *envp[] = {"HOME=/root", "PATH=/bin:/sbin", NULL};
+	char *envp[] = {NULL};
 	char *argv;
 
 	buffer = (char *)malloc(bufsize * sizeof(char));
@@ -31,7 +25,8 @@ int main(void)
 		perror("Unable to allocate buffer");
 		exit(1);
 	}
-	printf("$ ");
+	signal(SIGINT, sig_handler);
+	printf("($) ");
 	if (getline(&buffer,&bufsize,stdin) == -1 || strncmp(buffer,"exit",4) == 0)
 	{
 		exit(EXIT_FAILURE);
