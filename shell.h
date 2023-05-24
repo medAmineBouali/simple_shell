@@ -12,13 +12,17 @@
 #include <signal.h>
 
 #define END_OF_FILE -2
+char *buffer;
+char **argvs;
+int arg_num;
 extern char **environ;
 void print_env(void);
-void built_ins(char* buff);
+void built_ins();
 struct stat status;
 extern char **environ;
 void sig_handler(int sig);
-void _exiter(char* buff);
-void path_handler(char* path,char* buff);
+void _exiter();
+void path_handler(char* path);
+void mem_free();
 
 #endif

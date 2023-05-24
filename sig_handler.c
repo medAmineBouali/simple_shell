@@ -8,5 +8,5 @@
 void sig_handler(int sig)
 {
 	(void)sig;
-	write(STDOUT_FILENO, "\n($) ",5);
+	mem_free();
 }

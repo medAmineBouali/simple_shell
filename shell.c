@@ -9,13 +9,11 @@ int calc_args(char *buffer);
 
 int main(void)
 {
-	int i, ii;
+	int i;
 	pid_t pid;
-	char *buffer;
 	char path[25] = "/bin/";
 	size_t bufsize = 32;
 	char delim1[] = "\n", delim2[] = " ";
-	char **argvs;
 	char *envp[] = {NULL};
 	char *argv;
 
@@ -30,12 +28,13 @@ int main(void)
 	{
 		exit(EXIT_FAILURE);
 	}
+	signal(SIGINT, sig_handler);
 	strtok(buffer, delim1);
-	ii = (calc_args(buffer) + 2);
-	argvs = (char **)malloc(ii * sizeof(char *));
+	arg_num = calc_args(buffer);
+	argvs = (char **)malloc((arg_num + 1) * sizeof(char *));
 	argv = strtok(buffer, delim2);
-	built_ins(buffer);
-	path_handler(path,buffer);
+	built_ins();
+	path_handler(path);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -45,12 +44,7 @@ int main(void)
 	if (pid != 0)
 	{
 		wait(&i);
-		for (i = 0; i < ii; i++)
-		{
-			free(argvs[i]);
-		}
-		free(argvs);
-		free(buffer);
+		mem_free();
 		main();
 	}
 	else
@@ -81,8 +75,8 @@ int calc_args(char *buffer)
 	int i, n = 0;
 	for (i = 0; buffer[i]; i++)
 	{
-		if(buffer[i] == ' ')
+		if(buffer[i] == ' ' && buffer[i - 1] != ' ')
 			n++;
 	}
-	return (n);
+	return (n + 1);
 }

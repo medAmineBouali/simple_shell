@@ -1,28 +1,26 @@
 #include "shell.h"
 /**
- * exit_check - check for exit command.
- * @buff: buffer.
+ * _exiter - exit command..
  *
  * Return: nothing.
- */
-void _exiter(char* buff)
+  */
+void _exiter()
 {
-	(void)buff;
+	mem_free();
 	exit(0);
 }
 /**
  * path_handler - handles the path entery.
  * @path: path to return.
- * @buff: buffer
  * Return: nothing.
  */
-void path_handler(char* path,char* buff)
+void path_handler(char* path)
 {
-	if (stat(buff, &status) != 0)
+	if (stat(buffer, &status) != 0)
 	{
-		strcat(path,buff);
+		strcat(path,buffer);
 	} else
-		strcpy(path, buff);
+		strcpy(path, buffer);
 }
 void print_env(void)
 {
@@ -31,14 +29,14 @@ void print_env(void)
 	index = 0;
 	while (env[index])
 	{
-		printf("%s\n",env[index]);
+		printf("(%d)--%s\n",index,env[index]);
 		++index;
 	}
 }
-void built_ins(char* buff)
+void built_ins()
 {
-	if(strncmp(buff,"exit",5) == 0)
-	       _exiter(buff);
-	if(strncmp(buff,"env",4) == 0)
+	if(strncmp(buffer,"exit",5) == 0)
+	       _exiter();
+	if(strncmp(buffer,"env",4) == 0)
 		print_env();
 }
