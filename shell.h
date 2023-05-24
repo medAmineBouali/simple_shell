@@ -16,5 +16,6 @@ struct stat status;
 extern char **environ;
 void sig_handler(int sig);
 void exit_check(char* buff);
+void path_handler(char* path,char* buff);
 
 #endif

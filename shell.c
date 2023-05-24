@@ -35,18 +35,7 @@ int main(void)
 	argvs = (char **)malloc(ii * sizeof(char *));
 	argv = strtok(buffer, delim2);
 	exit_check(buffer);
-	if (stat(buffer, &status) != 0)
-	{
-		strcat(path,buffer);
-	
-	} else
-		strcpy(path, buffer);
-
-	if (stat(path, &status) != 0)
-	{
-		perror("./shell1");
-		main();
-	}
+	path_handler(path,buffer);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -75,7 +64,7 @@ int main(void)
 		{
 			perror("./shell");
 		}
-		main();
+
 	}
 
 	return (0);
