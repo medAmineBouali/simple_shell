@@ -17,6 +17,7 @@ int main(void)
 	int i, ii;
 	pid_t pid;
 	char *buffer;
+	char path[25] = "/bin/";
 	struct stat status;
 	size_t bufsize = 32;
 	char delim1[] = "\n", delim2[] = " ";
@@ -30,19 +31,27 @@ int main(void)
 		perror("Unable to allocate buffer");
 		exit(1);
 	}
-	printf("#cisfun$ ");
-	if (getline(&buffer,&bufsize,stdin) == -1)
+	printf("$ ");
+	if (getline(&buffer,&bufsize,stdin) == -1 || strncmp(buffer,"exit",4) == 0)
 	{
-		printf("\n");
 		exit(EXIT_FAILURE);
 	}
 	strtok(buffer, delim1);
 	ii = (calc_args(buffer) + 2);
 	argvs = (char **)malloc(ii * sizeof(char *));
 	argv = strtok(buffer, delim2);
+
 	if (stat(buffer, &status) != 0)
 	{
+		strcat(path,buffer);
+	
+	} else
+		strcpy(path, buffer);
+
+	if (stat(path, &status) != 0)
+	{
 		perror("./shell1");
+		main();
 	}
 	pid = fork();
 	if (pid == -1)
@@ -68,7 +77,7 @@ int main(void)
 			*(argvs + i) = argv;
 			argv = strtok(NULL, delim2);
 		}
-		if(execve(buffer, argvs, envp) == -1)
+		if(execve(path, argvs, envp) == -1)
 		{
 			perror("./shell");
 		}
