@@ -8,7 +8,7 @@
 void exit_check(char* buff)
 {
 	if(strncmp(buff,"exit",5) == 0)
-		exit(EXIT_SUCCESS);
+		exit(0);
 }
 /**
  * path_handler - handles the path entery.
