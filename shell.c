@@ -25,9 +25,8 @@ int main(void)
 		perror("Unable to allocate buffer");
 		exit(1);
 	}
-	signal(SIGINT, sig_handler);
 	printf("($) ");
-	if (getline(&buffer,&bufsize,stdin) == -1 || strncmp(buffer,"exit",4) == 0)
+	if (getline(&buffer,&bufsize,stdin) == -1)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -35,7 +34,7 @@ int main(void)
 	ii = (calc_args(buffer) + 2);
 	argvs = (char **)malloc(ii * sizeof(char *));
 	argv = strtok(buffer, delim2);
-
+	exit_check(buffer);
 	if (stat(buffer, &status) != 0)
 	{
 		strcat(path,buffer);
