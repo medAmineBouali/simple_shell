@@ -8,5 +8,5 @@
 void exit_check(char* buff)
 {
 	if(strncmp(buff,"exit",5) == 0)
-		exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 }
