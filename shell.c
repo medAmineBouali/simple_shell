@@ -1,82 +1,50 @@
 #include "shell.h"
-
-int calc_args(char *buffer);
 /**
- * main - Entry point.
- * 
- * Return: nothing.
- */
+* main - carries out the read, execute then print output loop
+* @ac: argument count
+* @av: argument vector
+* @envp: environment vector
+*
+* Return: 0
+*/
 
-int main(void)
+int main(int ac, char **av, char *envp[])
 {
-	int i;
-	pid_t pid;
-	char path[25] = "/bin/";
-	size_t bufsize = 32;
-	char delim1[] = "\n", delim2[] = " ";
-	char *envp[] = {NULL};
-	char *argv;
-
-	buffer = (char *)malloc(bufsize * sizeof(char));
-	if( buffer == NULL)
+	char *line = NULL, *pathcommand = NULL, *path = NULL;
+	size_t bufsize = 0;
+	ssize_t linesize = 0;
+	char **command = NULL, **paths = NULL;
+	(void)envp, (void)av;
+	if (ac < 1)
+		return (-1);
+	signal(SIGINT, handle_signal);
+	while (1)
 	{
-		perror("Unable to allocate buffer");
-		exit(1);
+		free_buffers(command);
+		free_buffers(paths);
+		free(pathcommand);
+		prompt_user();
+		linesize = getline(&line, &bufsize, stdin);
+		if (linesize < 0)
+			break;
+		info.ln_count++;
+		if (line[linesize - 1] == '\n')
+			line[linesize - 1] = '\0';
+		command = tokenizer(line);
+		if (command == NULL || *command == NULL || **command == '\0')
+			continue;
+		if (checker(command, line))
+			continue;
+		path = find_path();
+		paths = tokenizer(path);
+		pathcommand = test_path(paths, command[0]);
+		if (!pathcommand)
+			perror(av[0]);
+		else
+			execution(pathcommand, command);
 	}
-	printf("($) ");
-	if (getline(&buffer,&bufsize,stdin) == -1)
-	{
-		exit(EXIT_FAILURE);
-	}
-	signal(SIGINT, sig_handler);
-	strtok(buffer, delim1);
-	arg_num = calc_args(buffer);
-	argvs = (char **)malloc((arg_num + 1) * sizeof(char *));
-	argv = strtok(buffer, delim2);
-	built_ins();
-	path_handler(path);
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork failed");
-		return (1);
-	}
-	if (pid != 0)
-	{
-		wait(&i);
-		mem_free();
-		main();
-	}
-	else
-	{
-		for (i = 0; argv; i++)
-		{
-			*(argvs + i) = argv;
-			argv = strtok(NULL, delim2);
-		}
-		if(execve(path, argvs, envp) == -1)
-		{
-			perror("./shell");
-		}
-
-	}
-
+	if (linesize < 0 && flags.interactive)
+		write(STDERR_FILENO, "\n", 1);
+	free(line);
 	return (0);
-}
-
-/**
- * calc_args - calculates the number of arguments enterd.
- * @buffer: the command line entered. \
- *
- * Return: number or arguments.
- */
-int calc_args(char *buffer)
-{
-	int i, n = 0;
-	for (i = 0; buffer[i]; i++)
-	{
-		if(buffer[i] == ' ' && buffer[i - 1] != ' ')
-			n++;
-	}
-	return (n + 1);
 }
