@@ -29,7 +29,7 @@ void print_env(void)
 	index = 0;
 	while (env[index])
 	{
-		printf("%s\n",index,env[index]);
+		printf("%s\n",env[index]);
 		++index;
 	}
 }
